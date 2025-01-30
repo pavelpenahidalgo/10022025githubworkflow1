@@ -53,6 +53,8 @@ pipeline {
                         sh """
                             aws s3 sync s3://${params.BUCKET_FUENTE}/${params.CARPETA_USUARIO}/${params.CARPETA_RAMA}/${params.CARPETA_FUENTE}/ build/
                         """
+                        echo "Listando carpetas ..."
+                        sh "ls -la"
                     }                   
                 }
             }
@@ -70,9 +72,13 @@ pipeline {
             }
 
             steps {
+                echo "Listar carpetas antes del deploy..."
+                sh "ls -la"
+
+                echo "desplegando con vercel...."
                 sh """
                     npm install -g vercel
-                    vercel deploy build --prod --name front-vercel --token $VERCEL_TOKEN --yes
+                    vercel deploy --prod --name front-vercel --token $VERCEL_TOKEN --yes
                 """
             }
         }
