@@ -79,7 +79,7 @@ pipeline {
                 sh """
                     npm install -g vercel
                     cd build
-                    vercel deploy --prod --name front-vercel --token $VERCEL_TOKEN --yes
+                    vercel deploy --prod --name front-vercel --token $VERCEL_TOKEN --yes --force
                 """
             }
         }
