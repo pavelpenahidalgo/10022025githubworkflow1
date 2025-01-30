@@ -11,7 +11,7 @@ pipeline {
         string(name: 'CARPETA_USUARIO', defaultValue: 'fernando', description: 'Nombre de la carpeta del usuario..')
         string(name: 'CARPETA_FUENTE', defaultValue: 'VERSION_1.0', description: 'Nombre de la carpeta del bucket origen..')
         string(name: 'CARPETA_RAMA', defaultValue: 'master', description: 'Nombre de la carpeta de la rama del proyecto')
-        string(name: 'DESPLEGAR_A_VERCEL', defaultValue: false, description: 'Deseas desplegar en Vercel?')
+        booleanParam(name: 'DESPLEGAR_A_VERCEL', defaultValue: false, description: 'Deseas desplegar en Vercel?')
     }
 
 
