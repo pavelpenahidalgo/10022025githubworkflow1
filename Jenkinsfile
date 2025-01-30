@@ -10,6 +10,8 @@ pipeline {
                 docker { image 'node:16-alpine'}
             }
             steps {
+                echo "Remover dependencias antiguas o referencias por el json.lock"
+                sh 'rm -rf node_modules package-lock.json'
                 sh 'npm install'
             }
         }
