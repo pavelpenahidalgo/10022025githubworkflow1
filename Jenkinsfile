@@ -78,6 +78,7 @@ pipeline {
                 echo "desplegando con vercel...."
                 sh """
                     npm install -g vercel
+                    cd build
                     vercel deploy --prod --name front-vercel --token $VERCEL_TOKEN --yes
                 """
             }
