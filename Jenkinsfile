@@ -51,14 +51,14 @@ pipeline {
                         sh "mkdir -p build"
 
                         sh """
-                            aws s3 sync s3://${params.BUCKET_FUENTE}/${params.CARPETA_USUARIO}/${params.CARPETA_RAMA}/${params.CARPETA_FUENTE}/ build --recursive
+                            aws s3 sync s3://${params.BUCKET_FUENTE}/${params.CARPETA_USUARIO}/${params.CARPETA_RAMA}/${params.CARPETA_FUENTE}/ build/
                         """
                     }                   
                 }
             }
         }
 
-        stage('Descargar hacia vercel.....') {
+        stage('Desplegar hacia vercel.....') {
              agent {
                 docker { image 'node:18-alpine'}
             }
