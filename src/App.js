@@ -17,7 +17,7 @@ function App() {
         >
           Learn React
         </a>
-        <div>PROYECTO FRONT PARA PIPELINE VERSION 1.1-Master</div>
+        <div>PROYECTO FRONT PARA PIPELINE -- APUNTANDO A VERCEL DESDE GITHUB-ACTIONS</div>
       </header>
     </div>
   );
