@@ -1,0 +1,44 @@
+name: Workflow to deploy on vercel
+
+on: 
+  push:
+    branches:
+      - vercel
+
+jobs:
+  deploy-vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias...
+        run: npm install
+
+      - name: Compilar proyecto...
+        run: npm run build
+
+      - name: Conectandome a aws...
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Sync carpeta front en bucket para backup..
+        run: |
+          DATE=$(date + '%Y%m%d%H%M%S')
+          aws s3 sync build/ s3://bucket-codigo-backup/fernando/actions/codigo-vercel/$DATE --delete
+
+      - name: Instalar vercel...
+        run: npm install -g vercel
+
+      - name: Deploy to vercel...
+        run: vercel deploy --prod --name front-vercel --token=${{ secrets.VERCEL_TOKEN }} --yes
+      
+

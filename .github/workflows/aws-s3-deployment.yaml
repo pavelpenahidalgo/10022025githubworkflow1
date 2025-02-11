@@ -1,4 +1,4 @@
-name: Workflow vercel deploy
+name: Workflow to deploy on AWS
 
 on: 
   push:
@@ -30,16 +30,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       
-      - name: Validar conexion aws...
-        run: aws s3 ls
-      
-      - name: Sync carpeta front en bucket..
-        run: aws s3 sync build/ s3://bucket-codigo-backup/fernando/actions/codigo/ --delete
+      - name: Sync carpeta front en bucket para backup..
+        run: |
+          DATE=$(date + '%Y%m%d%H%M%S')
+          aws s3 sync build/ s3://bucket-codigo-backup/fernando/actions/codigo-s3/$DATE/ --delete
 
-      - name: Instalar vercel...
-        run: npm install -g vercel
-
-      - name: Deploy to vercel...
-        run: vercel deploy --prod --name front-vercel --token=${{ secrets.VERCEL_TOKEN }} --yes
+      - name: Sync carpeta front en bucket de la web..
+        run: aws s3 sync build/ s3://bucket-codigo-front/ --delete
       
 
