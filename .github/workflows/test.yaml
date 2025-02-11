@@ -2,10 +2,65 @@ name: Workflow dispatch event
 
 on: 
   workflow_dispatch:
+    inputs:
+      tipo-actualizacion:
+        description: 'Seleccionar un tipo de actualizacion'
+        required: true
+        type: choice
+        options:
+          - aws
+          - vercel
+      nombre-carpeta-origen:
+        description: 'Indica la carpeta de donde saldra el backup'
+        required: true
+        type: string
 
 jobs:
-  hello-world:
+  run-vercel-backup:
+    if: inputs.tipo-actualizacion == 'vercel'
     runs-on: ubuntu-latest
     steps:
-      - name: mensage de Ubuntu
-        run: echo "Hello world!"
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias...
+        run: npm install
+
+      - name: Conectandome a aws...
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Descargando archivos del backup
+        run: aws s3 sync s3://bucket-codigo-backup/fernando/actions/codigo-vercel/${{inputs.nombre-carpeta-origen}}/ build/ --delete
+      
+      - name: Validando carpeta de build
+        run: ls -la
+      
+      - name: Instalar vercel...
+        run: npm install -g vercel
+
+      - name: Deploy to vercel...
+        run: vercel deploy --prod --name front-vercel --token=${{ secrets.VERCEL_TOKEN }} --yes
+  
+  run-aws-backup:
+    if: inputs.tipo-actualizacion == 'aws'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conectandome a aws...
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Sync carpeta front en bucket para backup..
+        run: |
+          aws s3 sync s3://bucket-codigo-backup/fernando/actions/codigo-s3/${{inputs.nombre-carpeta-origen}}/ s3://bucket-codigo-front/ --delete
