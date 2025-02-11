@@ -29,11 +29,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      - name: Obtener fecha con formato...
+        run: echo "FECHA_ACTUAL=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
       
       - name: Sync carpeta front en bucket para backup..
         run: |
           DATE=$(date +'%Y%m%d%H%M%S')
-          aws s3 sync build/ s3://bucket-codigo-backup/fernando/actions/codigo-s3/$DATE/ --delete
+          aws s3 sync build/ s3://bucket-codigo-backup/fernando/actions/codigo-s3/${{env.FECHA_ACTUAL}}/ --delete
 
       - name: Sync carpeta front en bucket de la web..
         run: aws s3 sync build/ s3://bucket-codigo-front/ --delete
