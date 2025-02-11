@@ -32,7 +32,7 @@ jobs:
       
       - name: Sync carpeta front en bucket para backup..
         run: |
-          DATE=$(date + '%Y%m%d%H%M%S')
+          DATE=$(date +'%Y%m%d%H%M%S')
           aws s3 sync build/ s3://bucket-codigo-backup/fernando/actions/codigo-vercel/$DATE --delete
 
       - name: Instalar vercel...
